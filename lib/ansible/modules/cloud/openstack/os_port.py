@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
@@ -104,7 +104,7 @@ options:
      default: present
    availability_zone:
      description:
-       - Ignored. Present for backwards compatability
+       - Ignored. Present for backwards compatibility
      required: false
 '''
 
@@ -186,7 +186,7 @@ network_id:
 security_groups:
     description: Security group(s) associated with this port.
     returned: success
-    type: list of strings
+    type: list
 status:
     description: Port's status.
     returned: success
@@ -194,7 +194,7 @@ status:
 fixed_ips:
     description: Fixed ip(s) associated with this port.
     returned: success
-    type: list of dicts
+    type: list
 tenant_id:
     description: Tenant id associated with this port.
     returned: success
@@ -202,7 +202,7 @@ tenant_id:
 allowed_address_pairs:
     description: Allowed address pairs with this port.
     returned: success
-    type: list of dicts
+    type: list
 admin_state_up:
     description: Admin state up flag for this port.
     returned: success

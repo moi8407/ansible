@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-# (c) 2017, INSPQ Team SX5
+# (c) 2017, Etienne Sadio (etienne.theo@gmail.com)
 #
 # This file is not part of Ansible
 #
@@ -17,15 +17,15 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
 
 DOCUMENTATION = '''
 ---
-author: "Etienne Sadio (etienne.sadio@inspq.qc.ca"
-module: SX5_client
+author: "Etienne Sadio (etienne.sadio@inspq.qc.ca)"
+module: sx5_client
 short_description: Configure a client application url in SX5 DB 
 description:
     - This module creates, creat or update client application url.
@@ -110,11 +110,22 @@ EXAMPLES = '''
 '''
 
 RETURN = '''
-result:
-    ansible_facts: JSON representation for the client
-    stderr: Error message if it is the case
-    rc: return code, 0 if success, 1 otherwise
-    changed: Return True if the operation changed the client on the SX5 DB, false otherwise.
+ansible_facts:
+  description: JSON representation for the client.
+  returned: on success
+  type: dict
+stderr:
+  description: Error message if it is the case
+  returned: on error
+  type: str
+rc:
+  description: return code, 0 if success, 1 otherwise.
+  returned: always
+  type: bool
+changed:
+  description: Return True if the operation changed the client on the SX5 DB, false otherwise.
+  returned: always
+  type: bool
 '''
 import requests
 import json

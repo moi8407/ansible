@@ -16,9 +16,9 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
-                    'supported_by': 'community'}
+                    'supported_by': 'network'}
 
 
 DOCUMENTATION = """
@@ -35,8 +35,8 @@ description:
     base set of facts from the device and can enable or disable
     collection of additional facts.
 author:
-    - Jason Edelman (@jedelman8)
-    - Gabriele Gerbino (@GGabriele)
+  - Jason Edelman (@jedelman8)
+  - Gabriele Gerbino (@GGabriele)
 options:
   gather_subset:
     description:
@@ -52,17 +52,6 @@ options:
 """
 
 EXAMPLES = """
-# Note: examples below use the following provider dict to handle
-#       transport and authentication to the node.
----
-vars:
-  cli:
-    host: "{{ inventory_hostname }}"
-    username: admin
-    password: admin
-    transport: cli
-
----
 - nxos_facts:
     gather_subset: all
 
@@ -182,7 +171,7 @@ import re
 from ansible.module_utils.nxos import run_commands, get_config
 from ansible.module_utils.nxos import nxos_argument_spec, check_args
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six import iteritems
+from ansible.module_utils.six import string_types, iteritems
 
 
 class FactsBase(object):
@@ -220,7 +209,7 @@ class FactsBase(object):
 
 class Default(FactsBase):
 
-    VERSION_MAP = frozenset([
+    VERSION_MAP_7K = frozenset([
         ('sys_ver_str', 'version'),
         ('proc_board_id', 'serialnum'),
         ('chassis_id', 'model'),
@@ -228,10 +217,22 @@ class Default(FactsBase):
         ('host_name', 'hostname')
     ])
 
+    VERSION_MAP = frozenset([
+        ('kickstart_ver_str', 'version'),
+        ('proc_board_id', 'serialnum'),
+        ('chassis_id', 'model'),
+        ('kick_file_name', 'image'),
+        ('host_name', 'hostname')
+    ])
+
     def populate(self):
         data = self.run('show version', 'json')
         if data:
-            self.facts.update(self.transform_dict(data, self.VERSION_MAP))
+            if data.get('sys_ver_str'):
+                self.facts.update(self.transform_dict(data, self.VERSION_MAP_7K))
+            else:
+                self.facts.update(self.transform_dict(data, self.VERSION_MAP))
+
 
 class Config(FactsBase):
 
@@ -243,7 +244,6 @@ class Config(FactsBase):
 class Hardware(FactsBase):
 
     def populate(self):
-        cmd = {'command': 'dir', 'output': 'text'},
         data = self.run('dir', 'text')
         if data:
             self.facts['filesystems'] = self.parse_filesystems(data)
@@ -290,10 +290,10 @@ class Interfaces(FactsBase):
             self.facts['interfaces'] = self.populate_interfaces(data)
 
         data = self.run('show ipv6 interface', 'json')
-        if data:
+        if data and not isinstance(data, string_types):
             self.parse_ipv6_interfaces(data)
 
-        data = self.run('show lldp neighbors', 'json')
+        data = self.run('show lldp neighbors')
         if data:
             self.facts['neighbors'] = self.populate_neighbors(data)
 
@@ -321,8 +321,7 @@ class Interfaces(FactsBase):
             if data.startswith('ERROR'):
                 return dict()
 
-            lines = data.split('\n')
-            regex = re.compile('(\S+)\s+(\S+)\s+\d+\s+\w+\s+(\S+)')
+            regex = re.compile(r'(\S+)\s+(\S+)\s+\d+\s+\w+\s+(\S+)')
 
             for item in data.split('\n')[4:-1]:
                 match = regex.match(item)
@@ -357,6 +356,7 @@ class Interfaces(FactsBase):
             intf = self.facts['interfaces'][name]
             intf['ipv6'] = self.transform_dict(item, self.INTERFACE_IPV6_MAP)
             self.facts['all_ipv6_addresses'].append(item['ROW_intf']['addr'])
+
 
 class Legacy(FactsBase):
     # facts from nxos_facts 2.1
@@ -442,7 +442,10 @@ class Legacy(FactsBase):
         return objects
 
     def parse_power_supply_info(self, data):
-        data = data['powersup']['TABLE_psinfo']['ROW_psinfo']
+        if data.get('powersup').get('TABLE_psinfo_n3k'):
+            data = data['powersup']['TABLE_psinfo_n3k']['ROW_psinfo_n3k']
+        else:
+            data = data['powersup']['TABLE_psinfo']['ROW_psinfo']
         objects = list(self.transform_iterable(data, self.POWERSUP_MAP))
         return objects
 
@@ -456,6 +459,7 @@ FACT_SUBSETS = dict(
 )
 
 VALID_SUBSETS = frozenset(FACT_SUBSETS.keys())
+
 
 def main():
     spec = dict(

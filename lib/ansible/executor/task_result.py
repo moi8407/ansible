@@ -19,7 +19,12 @@
 from __future__ import (absolute_import, division, print_function)
 __metaclass__ = type
 
+from copy import deepcopy
+
 from ansible.parsing.dataloader import DataLoader
+from ansible.vars.manager import strip_internal_keys
+
+_IGNORE = ('failed', 'skipped')
 
 
 class TaskResult:
@@ -67,7 +72,7 @@ class TaskResult:
            'results' in self._result and True in [True for x in self._result['results'] if 'failed_when_result' in x]:
             return self._check_key('failed_when_result')
         else:
-            return self._check_key('failed') or self._result.get('rc', 0) != 0
+            return self._check_key('failed')
 
     def is_unreachable(self):
         return self._check_key('unreachable')
@@ -83,3 +88,32 @@ class TaskResult:
                 if isinstance(res, dict):
                     flag |= res.get(key, False)
             return flag
+
+    def clean_copy(self):
+
+        ''' returns 'clean' taskresult object '''
+
+        # FIXME: clean task_fields, _task and _host copies
+        result = TaskResult(self._host, self._task, {}, self._task_fields)
+
+        # statuses are already reflected on the event type
+        if result._task and result._task.action in ['debug']:
+            # debug is verbose by default to display vars, no need to add invocation
+            ignore = _IGNORE + ('invocation',)
+        else:
+            ignore = _IGNORE
+
+        if self._result.get('_ansible_no_log', False):
+            result._result = {"censored": "the output has been hidden due to the fact that 'no_log: true' was specified for this result"}
+        elif self._result:
+            result._result = deepcopy(self._result)
+
+            # actualy remove
+            for remove_key in ignore:
+                if remove_key in result._result:
+                    del result._result[remove_key]
+
+            # remove almost ALL internal keys, keep ones relevant to callback
+            strip_internal_keys(result._result, exceptions=('_ansible_verbose_always', '_ansible_item_label', '_ansible_no_log'))
+
+        return result

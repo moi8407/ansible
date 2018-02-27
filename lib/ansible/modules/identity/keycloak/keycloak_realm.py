@@ -1,7 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
-from pip._vendor.requests.models import Request
-from curses.ascii import NUL
+
 
 # (c) 2017, Philippe Gauthier INSPQ <philippe.gauthier@inspq.qc.ca>
 #
@@ -20,7 +19,7 @@ from curses.ascii import NUL
 # You should have received a copy of the GNU General Public License
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
@@ -32,7 +31,7 @@ module: keycloak_realm
 short_description: Configure a realm in Keycloak
 description:
   - This module creates, removes or update Keycloak realms.
-version_added: "1.1"
+version_added: "2.3"
 options:
   realm:
     description:
@@ -59,259 +58,256 @@ options:
     description:
     - The name to use within the HTML page of the realm.
     required: true
+  loginTheme:
+    description:
+    - Theme to use at logon for this realm.
+    required: false
+  adminTheme:
+    description:
+    - Theme to use for this realm's admin console.
+    required: false
+  emailTheme:
+    description:
+    - Theme to use for this realm's emails.
+    required: false
+  accountTheme:
+    description:
+    - Theme to use for this realm's accounts.
+    required: false
+  internationalizationEnabled:
+    description:
+    - Is internationalization enabled for this realm?
+    required: false
+  supportedLocales:
+    description:
+    - List of supported languages for the realm.
+    required: false
+  defaultLocale:
+    description:
+    - If multiple locales are suported, which one will be used as default language.
+    required: false
   accessCodeLifespan:
     description:
-    - integer: access code lifespan.
+    - access code lifespan.
     default: 60
     required: false
   accessCodeLifespanLogin:
     description: 
-    - integer : access code lifespan login.
+    - access code lifespan login.
     default: 1800
     required: false
   accessCodeLifespanUserAction:
     description:
-    - integer : access code lifespan user action.
+    - access code lifespan user action.
     default: 300
     required: false
   accessTokenLifespan:
     description:
-    - integer : access token lifespan.
+    - Access token lifespan.
     default: 300
     required: false
   accessTokenLifespanForImplicitFlow:
     description:
-    - integer : access token lifespan for implicit flow.
+    - Access token lifespan for implicit flow.
     default: 900
     required: false
-  notBefore
+  notBefore:
     description:
-    - integer : not Before.
+    - Not Before.
     default: 900
     required: false
-  revokeRefreshToken
+  revokeRefreshToken:
     description:
-    - bool : revoke Refresh Token.
+    - Revoke Refresh Token.
     default: 900
     required: false
-  accessTokenLifespan
+  ssoSessionMaxLifespan:
     description:
-    - integer : access token lifespan.
-    default: 300
-    required: false
-  ssoSessionMaxLifespan
-    description:
-    - integer : sso Session Max Lifespan.
+    - Sso Session Max Lifespan.
     default: 36000
     required: false
-  offlineSessionIdleTimeout
+  offlineSessionIdleTimeout:
     description:
-    - integer : offline Session Idle Timeout.
+    - Offline Session Idle Timeout.
     default: 2592000
     required: false
-  enabled
+  enabled:
     description:
-    - bool : enabled.
+    - Enabled.
     default: True
     required: false
-  sslRequired
+  sslRequired:
     description:
-    - str : sslRequired.
+    - Ssl Required.
     default: external
     required: false
-  registrationAllowed
+  registrationAllowed:
     description:
-    - bool : registration Allowed.
+    - Registration Allowed.
     default: False
     required: false
-  registrationEmailAsUsername
+  registrationEmailAsUsername:
     description:
-    - bool : registration Email As Username.
+    - Registration Email As Username.
     default: False
     required: false
-  rememberMe
+  rememberMe:
     description:
-    - bool : remember me.
+    - Remember me.
     default: False
     required: false
-  verifyEmail
+  verifyEmail:
     description:
-    - bool : verify Email.
+    - Verify Email.
     default: False
     required: false
-  loginWithEmailAllowed
+  loginWithEmailAllowed:
     description:
-    - bool : login With Email Allowed.
+    - Login With Email Allowed.
     default: True
     required: false
-  duplicateEmailsAllowed
+  duplicateEmailsAllowed:
     description:
-    - bool : duplicate Emails Allowed.
+    - Duplicate Emails Allowed.
     default: 900
     required: false
-  resetPasswordAllowed
+  resetPasswordAllowed:
     description:
-    - bool : reset Password Allowed.
+    - Reset Password Allowed.
     default: False
     required: false
-  editUsernameAllowed
+  editUsernameAllowed:
     description:
-    - bool : edit Username Allowed.
+    - Edit Username Allowed.
     default: False
     required: false
-  bruteForceProtected
+  bruteForceProtected:
     description:
-    - integer : brute Force Protected.
+    - Brute Force Protected.
     default: False
     required: false
-  maxFailureWaitSeconds
+  permanentLockout:
     description:
-    - integer : max Failure Wait Seconds.
+    - Permanent Lockout.
+    default: False
+    required: false
+  maxFailureWaitSeconds:
+    description:
+    - Max Failure Wait Seconds.
     default: 900
     required: false
-  minimumQuickLoginWaitSeconds
+  minimumQuickLoginWaitSeconds:
     description:
-    - integer : minimum Quick Login Wait Seconds.
+    - Minimum Quick Login Wait Seconds.
     default: 60
     required: false
-  waitIncrementSeconds
+  waitIncrementSeconds:
     description:
-    - integer : wait Increment Seconds.
+    - Wait Increment Seconds.
     default: 60
     required: false
-  quickLoginCheckMilliSeconds
+  quickLoginCheckMilliSeconds:
     description:
-    - integer : quick Login Check MilliSeconds.
+    - Quick Login Check MilliSeconds.
     default: 1000
     required: false
-  maxDeltaTimeSeconds
+  maxDeltaTimeSeconds:
     description:
-    - integer : max Delta Time Seconds.
+    - Max Delta Time Seconds.
     default: 43200
     required: false
-  failureFactor
+  failureFactor:
     description:
-    - integer : failure Factor.
+    - Failure Factor.
     default: 30
     required: false
-  defaultRoles
+  defaultRoles:
     description:
-    - list : default roles.
+    - Default roles.
     default: [ "offline_access", "uma_authorization" ]
     required: false
-  requiredCredentials
+  requiredCredentials:
     description:
-    - list : required Credentials.
+    - Required Credentials.
     default: [ "password" ]
     required: false
-  passwordPolicy
+  passwordPolicy:
     description:
-    - str : password Policy.
+    - Password Policy.
     default: hashIterations(20000)
     required: false
-  otpPolicyType
+  otpPolicyType:
     description:
-    - str : otp Policy Type.
+    - Otp Policy Type.
     default: totp
     required: false
-  otpPolicyAlgorithm
+  otpPolicyAlgorithm:
     description:
-    - str : otpPolicyAlgorithm.
+    - Otp Policy Algorithm.
     default: HmacSHA1
     required: false
-  otpPolicyInitialCounter
+  otpPolicyInitialCounter:
     description:
-    - integer : otpPolicyInitialCounter.
+    - Otp Policy Initial Counter.
     default: 0
     required: false
-  otpPolicyDigits
+  otpPolicyDigits:
     description:
-    - integer : otp Policy Digits.
+    - Otp Policy Digits.
     default: 6
     required: false
-  otpPolicyLookAheadWindow
+  otpPolicyLookAheadWindow:
     description:
-    - integer : otp Policy Look Ahead Window.
+    - Otp Policy Look Ahead Window.
     default: 1
     required: false
-  otpPolicyPeriod
+  otpPolicyPeriod:
     description:
-    - integer : otp Policy Period.
+    - Otp Policy Period.
     default: 30
     required: false
-  smtpServer
+  smtpServer:
     description:
-    - dict : SMTP Server.
+    - SMTP Server.
     default: {}
     required: false
-  eventsEnabled
+  eventsConfig:
     description:
-    - bool : events Enabled.
-    default: False
+    - Event configuration for the realm.
     required: false
-  eventsListeners
+  browserFlow:
     description:
-    - list : events Listeners.
-    default: [ "jboss-logging" ]
-    required: false
-  enabledEventTypes
-    description:
-    - list : enabledEventTypes.
-    default: [ ]
-    required: false
-  adminEventsEnabled
-    description:
-    - bool : admin Events Enabled.
-    default: False
-    required: false
-  adminEventsDetailsEnabled
-    description:
-    - bool : admin Events Details Enabled.
-    default: False
-    required: false
-  internationalizationEnabled
-    description:
-    - bool : internationalization Enabled.
-    default: False
-    required: false
-  supportedLocales
-    description:
-    - list : supported Locales.
-    default: [ ]
-    required: false
-  browserFlow
-    description:
-    - str : browser Flow.
+    - Browser Flow.
     default: browser
     required: false
-  registrationFlow
+  registrationFlow:
     description:
-    - str : registrationFlow.
+    - Registration Flow.
     default: registration
     required: false
-  directGrantFlow
+  directGrantFlow:
     description:
-    - str : direct Grant Flow.
+    - Direct Grant Flow.
     default: direct grant
     required: false
-  resetCredentialsFlow
+  resetCredentialsFlow:
     description:
-    - integer : reset Credentials Flow.
+    - Reset Credentials Flow.
     default: reset credentials
     required: false
-  clientAuthenticationFlow
+  clientAuthenticationFlow:
     description:
-    - integer : client Authentication Flow.
+    - Client Authentication Flow.
     default: clients
     required: false
-  attributes=dict(type='dict', default=None),
+  attributes:
     description:
-    - dict : attributes.
+    - Attributes.
     default: None
     required: false
-  browserSecurityHeaders
+  browserSecurityHeaders:
     description:
-    - dict : browser Security Headers.
+    - Browser Security Headers.
     default: None
     required: false
   state:
@@ -331,73 +327,73 @@ notes:
 '''
 
 EXAMPLES = '''
-# Create a realm realm1 with default settings.
-- keycloak_realm:
-    name: realm1 
-    state: present
+    - name: Create a realm
+      keycloak_realm:
+        realm: realm1
+        name: "realm1"
+        namehtml: "The first Realm"
+        url: "http://localhost:8080"
+        username: "admin"
+        password: "admin"
+        smtpServer: 
+          replyToDisplayName: root
+          starttls: ""
+          auth: ""
+          port: "25"
+          host: "localhost"
+          replyTo: "root@localhost"
+          from: "root@localhost"
+          fromDisplayName: "local"
+          envelopeFrom: "root@localhost"
+          ssl: ""
+        eventsConfig:
+          eventsEnabled: true
+          eventsListeners :
+            - jboss-logging
+            - sx5-event-listener
+          adminEventsEnabled: true
+          adminEventsDetailsEnabled: false
+        state : present
 
-# Re-create the realm realm1
-- keycloak_realm:
-    name: realm1
-    state: present
-    force: yes
+    - name: Re-create the realm realm1
+      keycloak_realm:
+        realm: realm1
+        name: "realm1"
+        namehtml: "The first Realm"
+        url: "http://localhost:8080"
+        username: "admin"
+        password: "admin"
+        state : present
+        force: yes
 
-# Remove a the realm realm1.
-- keycloak_realm:
-    name: realm1
-    state: absent
+    - name: Remove a the realm realm1.
+      keycloak_realm:
+        name: realm1
+        state: absent
 '''
 
 RETURN = '''
-result:
-    ansible_facts: Representation JSON du REALM
-    stderr: Message d'erreur s'il y en a un
-    rc: Code de retour, 0 si succès, 1 si erreur
-    changed: Retourne vrai si l'action a modifié de REALM, faux sinon.
+ansible_facts:
+  description: JSON representation for the REALM.
+  returned: on success
+  type: dict
+stderr:
+  description: Error message if it is the case
+  returned: on error
+  type: str
+rc:
+  description: return code, 0 if success, 1 otherwise.
+  returned: always
+  type: bool
+changed:
+  description: Return True if the operation changed the REALM on the keycloak server, false otherwise.
+  returned: always
+  type: bool
 '''
-import requests
+
 import json
 import urllib
-from ansible.module_utils.keycloak_utils import *
-
-def login(url, username, password):
-    '''
-Fonction : login
-Description :
-    Cette fonction permet de s'authentifier sur le serveur Keycloak.
-Arguments :
-    url :
-        type : str
-        description :
-            url de base du serveur Keycloak        
-    username :
-        type : str
-        description :
-            identifiant à utiliser pour s'authentifier au serveur Keycloak        
-    password :
-        type : str
-        description :
-            Mot de passe pour s'authentifier au serveur Keycloak        
-    '''
-    # Login to Keycloak
-    accessToken = ""
-    body = {
-            'grant_type': 'password',
-            'username': username,
-            'password': password,
-            'client_id': 'admin-cli'
-    }
-    try:
-        loginResponse = requests.post(url + '/auth/realms/master/protocol/openid-connect/token',data=body)
-    
-        loginData = loginResponse.json()
-        accessToken = loginData['access_token']
-    except requests.exceptions.RequestException, e:
-        raise e
-    except ValueError, e:
-        raise e
-
-    return accessToken
+from ansible.module_utils.keycloak_utils import * 
 
 def main():
     module = AnsibleModule(
@@ -408,6 +404,13 @@ def main():
             password=dict(required=True),
             name=dict(type='str', default=""),
             namehtml=dict(type='str', default=""),
+            loginTheme=dict(type="str"),
+            adminTheme=dict(type="str"),
+            emailTheme=dict(type="str"),
+            accountTheme=dict(type="str"),
+            internationalizationEnabled=dict(type="bool"),
+            supportedLocales=dict(type="list"),
+            defaultLocale=dict(type="str"),
             accessCodeLifespan=dict(type='int', default=60),
             accessCodeLifespanLogin=dict(type='int', default=1800),
             accessCodeLifespanUserAction=dict(type='int',default=300),
@@ -429,6 +432,7 @@ def main():
             resetPasswordAllowed = dict(type='bool', default=False),
             editUsernameAllowed = dict(type='bool', default=False),
             bruteForceProtected = dict(type='bool', default=False),
+            permanentLockout = dict(type='bool', default=False),
             maxFailureWaitSeconds = dict(type='int', default=900),
             minimumQuickLoginWaitSeconds = dict(type='int', default=60),
             waitIncrementSeconds = dict(type='int', default=60),
@@ -445,13 +449,7 @@ def main():
             otpPolicyLookAheadWindow = dict(type='int', default=1),
             otpPolicyPeriod = dict(type='int', default=30),
             smtpServer = dict(type='dict', default={}),
-            eventsEnabled = dict(type='bool', default=False),
-            eventsListeners = dict(type='list', default=[ "jboss-logging" ]),
-            enabledEventTypes = dict(type='list', default=[ ]),
-            adminEventsEnabled= dict(type='bool', default=False),
-            adminEventsDetailsEnabled= dict(type='bool', default=False),
-            internationalizationEnabled= dict(type='bool', default=False),
-            supportedLocales= dict(type='list', default=[ ]),
+            eventsConfig = dict(type='dict'),
             browserFlow= dict(type='str', default="browser"),
             registrationFlow= dict(type='str', default="registration"),
             directGrantFlow= dict(type='str', default="direct grant"),
@@ -486,16 +484,8 @@ def realm(params):
             ), 
         actionTokenGeneratedByAdminLifespan = dict(type='int', default=43200), 
         actionTokenGeneratedByUserLifespan = dict(type='int', default=300), 
-        bruteForceProtected = dict(type='bool', default=False), 
         displayName = dict(type='unicode', default=params['name'].decode("utf-8")), 
         displayNameHtml = dict(type='unicode', default=params['namehtml'].decode("utf-8")), 
-        failureFactor = dict(type='int', default=30), 
-        maxDeltaTimeSeconds = dict(type='int', default=43200), 
-        maxFailureWaitSeconds = dict(type='int', default=900), 
-        minimumQuickLoginWaitSeconds = dict(type='int', default=60), 
-        permanentLockout = dict(type='bool', default=False), 
-        quickLoginCheckMilliSeconds = dict(type='int', default=1000), 
-        waitIncrementSeconds = dict(type='int', default=60)
         )
     defaultBrowserSecurityHeaders = dict(
         contentSecurityPolicy = dict(type='unicode', default="frame-src 'self'"), 
@@ -518,6 +508,14 @@ def realm(params):
     newRealmRepresentation["realm"] = params['realm'].decode("utf-8")
     newRealmRepresentation["displayName"] = params['name'].decode("utf-8")
     newRealmRepresentation["displayNameHtml"] = params['namehtml'].decode("utf-8")
+    if "loginTheme" in params and params["loginTheme"] is not None:
+        newRealmRepresentation["loginTheme"] = params["loginTheme"].decode("utf-8")
+    if "adminTheme" in params and params["adminTheme"] is not None:
+        newRealmRepresentation["adminTheme"] = params["adminTheme"].decode("utf-8")
+    if "emailTheme" in params and params["emailTheme"] is not None:
+        newRealmRepresentation["emailTheme"] = params["emailTheme"].decode("utf-8")
+    if "accountTheme" in params and params["accountTheme"] is not None:
+        newRealmRepresentation["accountTheme"] = params["accountTheme"].decode("utf-8")
     newRealmRepresentation["accessCodeLifespan"] = params['accessCodeLifespan']
     newRealmRepresentation["accessCodeLifespanLogin"] = params['accessCodeLifespanLogin']
     newRealmRepresentation["accessCodeLifespanUserAction"] = params['accessCodeLifespanUserAction']
@@ -539,6 +537,7 @@ def realm(params):
     newRealmRepresentation["resetPasswordAllowed"] = params['resetPasswordAllowed']
     newRealmRepresentation["editUsernameAllowed"] = params['editUsernameAllowed']
     newRealmRepresentation["bruteForceProtected"] = params['bruteForceProtected']
+    newRealmRepresentation["permanentLockout"] = params['permanentLockout']
     newRealmRepresentation["maxFailureWaitSeconds"] = params['maxFailureWaitSeconds']
     newRealmRepresentation["minimumQuickLoginWaitSeconds"] = params['minimumQuickLoginWaitSeconds']
     newRealmRepresentation["waitIncrementSeconds"] = params['waitIncrementSeconds']
@@ -554,29 +553,35 @@ def realm(params):
     newRealmRepresentation["otpPolicyDigits"] = params['otpPolicyDigits']
     newRealmRepresentation["otpPolicyLookAheadWindow"] = params['otpPolicyLookAheadWindow']
     newRealmRepresentation["otpPolicyPeriod"] = params['otpPolicyPeriod']
-    #if len(params['smtpServer']):
     newRealmRepresentation["smtpServer"] = params['smtpServer']
-    newRealmRepresentation["eventsEnabled"] = params['eventsEnabled']
-    newRealmRepresentation["eventsListeners"] = params['eventsListeners']
-    newRealmRepresentation["enabledEventTypes"] = params['enabledEventTypes']
-    newRealmRepresentation["adminEventsEnabled"] = params['adminEventsEnabled']
-    newRealmRepresentation["adminEventsDetailsEnabled"] = params['adminEventsDetailsEnabled']
-    newRealmRepresentation["internationalizationEnabled"] = params['internationalizationEnabled']
-    newRealmRepresentation["supportedLocales"] = params['supportedLocales']
+    if "supportedLocales" in params and params["supportedLocales"] is not None:
+        if "internationalizationEnabled" in params and params["internationalizationEnabled"] is not None:
+            newRealmRepresentation["internationalizationEnabled"] = params["internationalizationEnabled"]
+        else:
+            newRealmRepresentation["internationalizationEnabled"] = True
+        newRealmRepresentation["supportedLocales"] = params["supportedLocales"]
+        if "defaultLocale" in params and params["defaultLocale"]:
+            newRealmRepresentation["defaultLocale"] = params["defaultLocale"].decode("utf-8")
+    else:
+        newRealmRepresentation["internationalizationEnabled"] = False
     newRealmRepresentation["browserFlow"] = params['browserFlow'].decode("utf-8")
     newRealmRepresentation["registrationFlow"] = params['registrationFlow'].decode("utf-8")
     newRealmRepresentation["directGrantFlow"] = params['directGrantFlow'].decode("utf-8")
     newRealmRepresentation["resetCredentialsFlow"] = params['resetCredentialsFlow'].decode("utf-8")
     newRealmRepresentation["clientAuthenticationFlow"] = params['clientAuthenticationFlow'].decode("utf-8")
+    
     # Stocker le REALM dans un body prèt a être posté
     data=json.dumps(newRealmRepresentation)
+    # Read Events configuration for the Realm
+    newEventsConfig = params["eventsConfig"] if "eventsConfig" in params and params["eventsConfig"] is not None else None
+    
     rc = 0
     result = dict()
     changed = False
-
+    realmExists = False
+    realmRepresentation = {}
     try:
-        accessToken = login(url, username, password)
-        bearerHeader = "bearer " + accessToken
+        headers = loginAndSetHeaders(url, username, password)
     except Exception, e:
         result = dict(
             stderr   = 'login: ' + str(e),
@@ -586,29 +591,44 @@ def realm(params):
         return result
     try: 
         # Vérifier si le REALM existe sur le serveur Keycloak
-        getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader})
-    except requests.HTTPError, e:
-        getStatusCode = getResponse.status_code
-    except:
-        getStatusCode = 0
-    else:
-        getStatusCode = getResponse.status_code
+        getResponse = requests.get(url + "/auth/admin/realms/", headers=headers)
+        listRealms = getResponse.json()
         
-    
-   
-    if (getStatusCode == 404): # Le realm n'existe pas
+        for realm in listRealms:
+            if realm['id'] == newRealmRepresentation["id"]:
+                realmExists = True
+                realmRepresentation = realm
+                break
+    except Exception, e:
+        result = dict(
+            stderr   = 'first realm get: ' + str(e),
+            rc       = 1,
+            changed  = changed
+            )
+        return result
+        
+    if not realmExists: # Le realm n'existe pas
         # Creer le realm
         
         if (state == 'present'): # Si le status est présent
             try:
+                fact = dict()
                 # Créer le REALM
-                postResponse = requests.post(url + "/auth/admin/realms", headers={'Authorization' : bearerHeader, 'Content-type': 'application/json'}, data=data)
+                postResponse = requests.post(url + "/auth/admin/realms/", headers=headers, data=data)
+                # if there is a configuration for Events
+                if newEventsConfig is not None:
+                    data=json.dumps(newEventsConfig)
+                    # Update the Config
+                    putResponse = requests.put(url + "/auth/admin/realms/" + newRealmRepresentation["id"] + "/events/config", headers=headers, data=data)
+                    # Get the actual config from Keycloak server
+                    getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"] + "/events/config", headers=headers)
+                    eventsConfig = getResponse.json()
+                    fact["eventsConfig"] = eventsConfig
                 # Obtenir le nouveau REALM créé
-                getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader})
+                getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers=headers)
                 realmRepresentation = getResponse.json()
+                fact["realm"] = realmRepresentation
                 changed = True
-                fact = dict(
-                    realm = realmRepresentation)
                 result = dict(
                     ansible_facts = fact,
                     rc = 0,
@@ -636,17 +656,17 @@ def realm(params):
                 changed  = changed
             )
                 
-    elif (getStatusCode == 200):  # Le realm existe déjà
+    else:  # Le realm existe déjà
         try:
             if (state == 'present'): # si le status est présent
                 # Obtenir le REALM exitant
-                realmRepresentation = getResponse.json()
+                #realmRepresentation = getResponse.json()
                 if force: # Si l'option force est sélectionné
                     # Supprimer le REALM existant
                     deleteResponse = requests.delete(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader, 'Content-type': 'application/json'})
                     changed = True
                     # Créer le nouveau REALM
-                    postResponse = requests.post(url + "/auth/admin/realms", headers={'Authorization' : bearerHeader, 'Content-type': 'application/json'}, data=data)
+                    postResponse = requests.post(url + "/auth/admin/realms", headers=headers, data=data)
                 else: # Si l'option force n'est pas sélectionné
                     # Comparer les realms
                     if (isDictEquals(newRealmRepresentation, realmRepresentation)): # Si le nouveau REALM n'introduit pas de modification au REALM existant
@@ -654,11 +674,11 @@ def realm(params):
                         changed = False
                     else: # Si le REALM doit être modifié
                         # Mettre à jour le REALM sur le serveur Keycloak
-                        updateResponse = requests.put(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader, 'Content-type': 'application/json'}, data=data)
+                        updateResponse = requests.put(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers=headers, data=data)
                         changed = True
                         
-                # Obtenir sa représentation JSON sur le serveur Keycloak                        
-                getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader})
+                # Obtenir sa nouvelle représentation JSON sur le serveur Keycloak                        
+                getResponse = requests.get(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers=headers)
                 realmRepresentation = getResponse.json()
                 
                 fact = dict(
@@ -671,7 +691,7 @@ def realm(params):
                     
             else: # Le status est absent
                 # Supprimer le REALM
-                deleteResponse = requests.delete(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers={'Authorization' : bearerHeader, 'Content-type': 'application/json'})
+                deleteResponse = requests.delete(url + "/auth/admin/realms/" + newRealmRepresentation["id"], headers=headers)
                 changed = True
                 result = dict(
                     realm    = newRealmRepresentation["id"],
@@ -693,14 +713,6 @@ def realm(params):
                 rc       = 1,
                 changed  = changed
                 )
-    else: # Le status HTTP du GET n'est ni 200 ni 404, c'est considéré comme une erreur.
-        rc = 1
-        result = dict(
-            realm = newRealmRepresentation["id"],
-            stderr = getStatusCode,
-            rc = 1,
-            changed = changed
-            )
 
     return result
 

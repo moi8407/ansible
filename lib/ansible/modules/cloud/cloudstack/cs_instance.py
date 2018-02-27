@@ -18,7 +18,7 @@
 # You should have received a copy of the GNU General Public License
 # along with Ansible. If not, see <http://www.gnu.org/licenses/>.
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['stableinterface'],
                     'supported_by': 'community'}
 
@@ -150,7 +150,8 @@ options:
     default: null
   root_disk_size:
     description:
-      - Root disk size in GByte required if deploying instance with KVM hypervisor and want resize the root disk size at startup (need CloudStack >= 4.4, cloud-initramfs-growroot installed and enabled in the template)
+      - Root disk size in GByte required if deploying instance with KVM hypervisor and want resize the root disk size at startup
+        (need CloudStack >= 4.4, cloud-initramfs-growroot installed and enabled in the template)
     required: false
     default: null
   security_groups:
@@ -828,6 +829,9 @@ class AnsibleCloudStackInstance(AnsibleCloudStack):
                     # Start VM again if it was running before
                     if instance_state == 'running' and start_vm:
                         instance = self.start_instance()
+            else:
+                self.module.warn("Changes won't be applied to running instances. " +
+                                 "Use force=true to allow the instance %s to be stopped/started." % instance['name'])
         return instance
 
 
@@ -884,7 +888,7 @@ class AnsibleCloudStackInstance(AnsibleCloudStack):
 
     def stop_instance(self):
         instance = self.get_instance()
-        # in check mode intance may not be instanciated
+        # in check mode instance may not be instanciated
         if instance:
             if instance['state'].lower() in ['stopping', 'stopped']:
                 return instance
@@ -905,7 +909,7 @@ class AnsibleCloudStackInstance(AnsibleCloudStack):
 
     def start_instance(self):
         instance = self.get_instance()
-        # in check mode intance may not be instanciated
+        # in check mode instance may not be instanciated
         if instance:
             if instance['state'].lower() in ['starting', 'running']:
                 return instance
@@ -926,7 +930,7 @@ class AnsibleCloudStackInstance(AnsibleCloudStack):
 
     def restart_instance(self):
         instance = self.get_instance()
-        # in check mode intance may not be instanciated
+        # in check mode instance may not be instanciated
         if instance:
             if instance['state'].lower() in [ 'running', 'starting' ]:
                 self.result['changed'] = True
@@ -948,7 +952,7 @@ class AnsibleCloudStackInstance(AnsibleCloudStack):
     def restore_instance(self):
         instance = self.get_instance()
         self.result['changed'] = True
-        # in check mode intance may not be instanciated
+        # in check mode instance may not be instanciated
         if instance:
             args = {}
             args['templateid'] = self.get_template_or_iso(key='id')
@@ -997,7 +1001,8 @@ def main():
         memory = dict(default=None, type='int'),
         template = dict(default=None),
         iso = dict(default=None),
-        template_filter = dict(default="executable", aliases=['iso_filter'], choices=['featured', 'self', 'selfexecutable', 'sharedexecutable', 'executable', 'community']),
+        template_filter = dict(default="executable", aliases=['iso_filter'], choices=['featured', 'self', 'selfexecutable', 'sharedexecutable', 'executable',
+                                                                                      'community']),
         networks = dict(type='list', aliases=[ 'network' ], default=None),
         ip_to_networks = dict(type='list', aliases=['ip_to_network'], default=None),
         ip_address = dict(defaul=None),

@@ -19,7 +19,7 @@
 # along with Ansible.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ANSIBLE_METADATA = {'metadata_version': '1.0',
+ANSIBLE_METADATA = {'metadata_version': '1.1',
                     'status': ['preview'],
                     'supported_by': 'community'}
 
@@ -27,15 +27,15 @@ ANSIBLE_METADATA = {'metadata_version': '1.0',
 DOCUMENTATION = '''
 ---
 module: ovirt_host_networks
-short_description: Module to manage host networks in oVirt
+short_description: Module to manage host networks in oVirt/RHV
 version_added: "2.3"
 author: "Ondra Machacek (@machacekondra)"
 description:
-    - "Module to manage host networks in oVirt."
+    - "Module to manage host networks in oVirt/RHV."
 options:
     name:
         description:
-            - "Name of the the host to manage networks for."
+            - "Name of the host to manage networks for."
         required: true
     state:
         description:
@@ -133,9 +133,10 @@ id:
     type: str
     sample: 7de90f31-222c-436c-a1ca-7e655bd5b60c
 host_nic:
-    description: "Dictionary of all the host NIC attributes. Host NIC attributes can be found on your oVirt instance
-                  at following url: https://ovirt.example.com/ovirt-engine/api/model#types/host_nic."
+    description: "Dictionary of all the host NIC attributes. Host NIC attributes can be found on your oVirt/RHV instance
+                  at following url: http://ovirt.github.io/ovirt-engine-api-model/master/#types/host_nic."
     returned: On success if host NIC is found.
+    type: dict
 '''
 
 import traceback
@@ -193,6 +194,7 @@ class HostNetworksModule(BaseModule):
         update = False
         bond = self._module.params['bond']
         networks = self._module.params['networks']
+        labels = self._module.params['labels']
         nic = get_entity(nic_service)
 
         if nic is None:
@@ -207,6 +209,12 @@ class HostNetworksModule(BaseModule):
                     sorted(get_link_name(self._connection, s) for s in nic.bonding.slaves)
                 )
             )
+
+        # Check if labels need to be updated on interface/bond:
+        if labels:
+            net_labels = nic_service.network_labels_service().list()
+            if sorted(labels) != sorted([lbl.id for lbl in net_labels]):
+                return True
 
         if not networks:
             return update
@@ -306,7 +314,7 @@ def main():
                 ] if bond else None,
                 modified_labels=[
                     otypes.NetworkLabel(
-                        name=str(name),
+                        id=str(name),
                         host_nic=otypes.HostNic(
                             name=bond.get('name') if bond else interface
                         ),
